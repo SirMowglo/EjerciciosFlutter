@@ -3,47 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(),
-    );
-  }
-}
-
-Future<Pokemon> fetchPoke() async {
-  final response = await http
-      .get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#39'));
-
-  if (response.statusCode == 200) {
-    return Pokemon.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load pokemon');
-  }
-}
-
-class Pokemon {
+class PokemonResponse {
   int? count;
   String? next;
-  Null? previous;
+  Null previous;
   List<Results>? results;
 
-  Pokemon({this.count, this.next, this.previous, this.results});
+  PokemonResponse({this.count, this.next, this.previous, this.results});
 
-  Pokemon.fromJson(Map<String, dynamic> json) {
+  PokemonResponse.fromJson(Map<String, dynamic> json) {
     count = json['count'];
     next = json['next'];
     previous = json['previous'];
@@ -83,5 +51,68 @@ class Results {
     data['name'] = this.name;
     data['url'] = this.url;
     return data;
+  }
+}
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+  // This widget is the root of your application.
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<PokemonResponse> futurePoke;
+  
+  @override
+  void initState() {
+    super.initState();
+    futurePoke = fetchPoke();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const title = "Los pokemone";
+    return MaterialApp(
+      title: title,
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(title),
+        ),
+        body: FutureBuilder<PokemonResponse>(
+            future: futurePoke,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                //return Text(snapshot.data!.results[0].name ?? "default");
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+
+              // By default, show a loading spinner.
+              return const CircularProgressIndicator();
+            },
+          ),
+      ),
+    );
+  }
+
+  Future<PokemonResponse> fetchPoke() async {
+    final response = await http
+        .get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#39'));
+
+    PokemonResponse pokelist;
+
+    if (response.statusCode == 200) {
+      pokelist = PokemonResponse.fromJson(jsonDecode(response.body));
+      return pokelist;
+    } else {
+      throw Exception('Failed to load pokemon');
+    }
   }
 }
