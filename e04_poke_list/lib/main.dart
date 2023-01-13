@@ -81,35 +81,42 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.amber,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text(title),
-        ),
-        body: FutureBuilder<dynamic>(
-          future: futurePoke,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.results!.length,
-                prototypeItem: ListTile(
-                  title: Text(snapshot.data!.results!.first.name!),
-                ),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(snapshot.data!.results![index].name!),
-                    onTap: () {
-                      print(snapshot.data!.results![index].url!);
+          appBar: AppBar(
+            title: const Text(title),
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: FutureBuilder<dynamic>(
+              future: futurePoke,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.results!.length,
+                    prototypeItem: ListTile(
+                      title: Text(snapshot.data!.results!.first.name!),
+                    ),
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(snapshot.data!.results![index].name!),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailPoke(
+                                      poke: snapshot.data!.results![index])));
+                        },
+                        leading: Image.network(
+                            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
+                      );
                     },
-                    leading: Image.network('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
                   );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
-      ),
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          )),
     );
   }
 
@@ -126,10 +133,30 @@ class _MyAppState extends State<MyApp> {
       throw Exception('Failed to load pokemon');
     }
   }
-  String pokemonEntry(String url){
-    String result= url.split('/').reversed.elementAt(1);
+
+  String pokemonEntry(String url) {
+    String result = url.split('/').reversed.elementAt(1);
 
     return result;
+  }
 }
 
+class DetailPoke extends StatelessWidget {
+  const DetailPoke({super.key, required this.poke});
+
+  final Results poke;
+
+  @override
+  Widget build(BuildContext context) {
+    const title = "Los pokemone";
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(15.0),
+        child: Text(poke.name!),
+      ),
+    );
+  }
 }
