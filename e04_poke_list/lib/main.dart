@@ -60,13 +60,12 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-  // This widget is the root of your application.
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<PokemonResponse> futurePoke;
-  
+  late Future<dynamic> futurePoke;
+
   @override
   void initState() {
     super.initState();
@@ -85,28 +84,40 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text(title),
         ),
-        body: FutureBuilder<PokemonResponse>(
-            future: futurePoke,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                //return Text(snapshot.data!.results[0].name ?? "default");
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner.
-              return const CircularProgressIndicator();
-            },
-          ),
+        body: FutureBuilder<dynamic>(
+          future: futurePoke,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.results!.length,
+                prototypeItem: ListTile(
+                  title: Text(snapshot.data!.results!.first.name!),
+                ),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data!.results![index].name!),
+                    onTap: () {
+                      print("PITO");
+                    },
+                    leading: Image.network('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }
 
-  Future<PokemonResponse> fetchPoke() async {
+  Future<dynamic> fetchPoke() async {
     final response = await http
         .get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=10&#39'));
 
-    PokemonResponse pokelist;
+    dynamic pokelist;
 
     if (response.statusCode == 200) {
       pokelist = PokemonResponse.fromJson(jsonDecode(response.body));
@@ -115,4 +126,10 @@ class _MyAppState extends State<MyApp> {
       throw Exception('Failed to load pokemon');
     }
   }
+  String pokemonEntry(String url){
+    String result= url.split('/').reversed.elementAt(1);
+
+    return result;
+}
+
 }
