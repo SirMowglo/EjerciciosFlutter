@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
                   return ListTile(
                     title: Text(snapshot.data!.results![index].name!),
                     onTap: () {
-                      print("PITO");
+                      print(snapshot.data!.results![index].url!);
                     },
                     leading: Image.network('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
                   );
