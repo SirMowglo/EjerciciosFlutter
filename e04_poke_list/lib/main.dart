@@ -52,12 +52,12 @@ class _MyAppState extends State<MyApp> {
                       return ListTile(
                         title: Text(snapshot.data!.results![index].name!),
                         onTap: () {
-                          Future<PokeDetails> prueba = fetchDetails(snapshot.data!.results![index].url!);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPoke(
-                                      details: prueba)));
+                                      url: snapshot
+                                          .data!.results![index].url!)));
                         },
                         leading: Image.network(
                             'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
@@ -108,9 +108,22 @@ Future<PokeDetails> fetchDetails(url) async {
   }
 }
 
-class DetailPoke extends StatelessWidget {
-  DetailPoke({super.key, required this.details});
-  final Future<PokeDetails> details;
+class DetailPoke extends StatefulWidget {
+  DetailPoke({super.key, required this.url});
+  final String url;
+
+  @override
+  State<DetailPoke> createState() => _DetailPokeState();
+}
+
+class _DetailPokeState extends State<DetailPoke> {
+  late Future<PokeDetails> details;
+
+  @override
+  void initState() {
+    super.initState();
+    details = fetchDetails(widget.url);
+  }
 
   @override
   Widget build(BuildContext context) {
