@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e04_poke_list/poke_details.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -99,11 +100,16 @@ class _MyAppState extends State<MyApp> {
                       return ListTile(
                         title: Text(snapshot.data!.results![index].name!),
                         onTap: () {
+                          //TODO: que haga un fetch de la informacion y que pase los detalles de pokemon
+                          //PokeDetails amigo = fetchDetails(snapshot.data!.results![index].url!);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPoke(
-                                      poke: snapshot.data!.results![index])));
+                                      details: 
+                                      )
+                                    )
+                                  );
                         },
                         leading: Image.network(
                             'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/icons/${pokemonEntry(snapshot.data!.results![index].url!)}.png'),
@@ -134,6 +140,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<PokeDetails> fetchDetails(url) async {
+    final response = await http.get(Uri.parse(url));
+
+    PokeDetails details;
+
+    if (response.statusCode == 200) {
+      details = PokeDetails.fromJson(jsonDecode(response.body));
+      return details;
+    } else {
+      throw Exception('Failed to load Details');
+    }
+  }
+
   String pokemonEntry(String url) {
     String result = url.split('/').reversed.elementAt(1);
 
@@ -142,9 +161,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DetailPoke extends StatelessWidget {
-  const DetailPoke({super.key, required this.poke});
+  const DetailPoke({super.key, required this.details});
 
-  final Results poke;
+  final PokeDetails details;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +174,7 @@ class DetailPoke extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(15.0),
-        child: Text(poke.name!),
+        child: Text(details.types!.first!.type!.name!),
       ),
     );
   }
