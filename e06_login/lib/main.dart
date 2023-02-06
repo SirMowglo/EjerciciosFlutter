@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         inputDecorationTheme: const InputDecorationTheme(
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: Color.fromARGB(255, 128, 56, 59)),
+            borderSide: BorderSide(width: 2, color: Color.fromARGB(255, 41, 41, 41)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: Color.fromARGB(255, 128, 56, 59)),
+            borderSide: BorderSide(width: 2, color: Color.fromARGB(255, 41, 41, 41)),
           ),
         ),
       ),
@@ -60,7 +60,7 @@ class _LoginDemoState extends State<LoginDemo> {
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
-                  hintText: 'Introduce un email valido como ej: abc@gmail.com'),
+                  hintText: 'Introduce un email valido'),
             ),
             )
           ),
