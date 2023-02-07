@@ -16,7 +16,7 @@ class MovieListItem extends StatelessWidget {
         leading: Text('${movie.id}', style: textTheme.bodySmall),
         title: Text(movie.title!),
         isThreeLine: true,
-        subtitle: Text(movie.releaseDate!.toIso8601String()),
+        subtitle: Text(movie.releaseDate!),
         dense: true,
       ),
     );

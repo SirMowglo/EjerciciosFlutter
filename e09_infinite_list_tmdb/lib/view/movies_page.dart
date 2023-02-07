@@ -13,7 +13,7 @@ class MoviesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Movies')),
       body: BlocProvider(
-        create: (_) => MovieBloc(httpClient: http.Client())..add(MovieFetched()),
+        create: (_) => MovieBloc()..add(MovieFetched()),
         child: const MoviesList(),
       ),
     );

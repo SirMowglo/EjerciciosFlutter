@@ -21,14 +21,14 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class MovieBloc extends Bloc<MovieEvent, MovieState> {
-  MovieBloc({required this.httpClient}) : super(const MovieState()) {
+  MovieBloc() : super(const MovieState()) {
     on<MovieFetched>(
       _onMovieFetched,
       transformer: throttleDroppable(throttleDuration),
     );
   }
 
-  final http.Client httpClient;
+  MovieRepo repo = MovieRepo();
 
   Future<void> _onMovieFetched(
     MovieFetched event,
@@ -37,8 +37,8 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
     if (state.hasReachedMax) return;
     try {
       if (state.status == MovieStatus.initial) {
-        final movies = await MovieRepo().fetchMovies(moviePage);
-        print(movies);
+        final movies = await repo.fetchMovies(moviePage);
+        print('hola');
         return emit(
           state.copyWith(
             status: MovieStatus.success,
@@ -50,7 +50,7 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
 
       moviePage++;
 
-      final movies = await MovieRepo().fetchMovies(moviePage);
+      final movies = await repo.fetchMovies(moviePage);
       movies.isEmpty
           ? emit(state.copyWith(hasReachedMax: true))
           : emit(
