@@ -27,7 +27,7 @@ class MovieState extends Equatable {
 
   @override
   String toString() {
-    return '''PostState { status: $status, hasReachedMax: $hasReachedMax, posts: ${movies.length} }''';
+    return '''MovieState { status: $status, hasReachedMax: $hasReachedMax, movies: ${movies.length} }''';
   }
 
   @override

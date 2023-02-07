@@ -28,10 +28,10 @@ class _MoviesListState extends State<MoviesList> {
       builder: (context, state) {
         switch (state.status) {
           case MovieStatus.failure:
-            return const Center(child: Text('failed to fetch posts'));
+            return const Center(child: Text('failed to fetch movies'));
           case MovieStatus.success:
             if (state.movies.isEmpty) {
-              return const Center(child: Text('no posts'));
+              return const Center(child: Text('no movies'));
             }
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {

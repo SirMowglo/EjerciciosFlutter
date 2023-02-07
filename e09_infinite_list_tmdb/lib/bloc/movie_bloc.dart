@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -40,6 +38,7 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
     try {
       if (state.status == MovieStatus.initial) {
         final movies = await MovieRepo().fetchMovies(moviePage);
+        print(movies);
         return emit(
           state.copyWith(
             status: MovieStatus.success,
@@ -49,7 +48,7 @@ class MovieBloc extends Bloc<MovieEvent, MovieState> {
         );
       }
 
-      moviePage ++;
+      moviePage++;
 
       final movies = await MovieRepo().fetchMovies(moviePage);
       movies.isEmpty

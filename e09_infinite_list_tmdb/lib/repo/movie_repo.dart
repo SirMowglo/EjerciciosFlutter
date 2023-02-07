@@ -3,24 +3,28 @@ import 'package:http/http.dart' as http;
 import '../model/movie.dart';
 
 class MovieRepo {
-  Future<List<Result>> fetchMovies([int startIndex = 0]) async {
+  Future<List<Result>> fetchMovies([int startIndex = 1]) async {
     final httpClient = http.Client();
 
     final response = await httpClient.get(
       Uri.https(
-        'jsonplaceholder.typicode.com',
-        '/posts',
-        <String, String>{'page': '$startIndex'},
+        'https://api.themoviedb.org/3',
+        '/movie/popular',
+        <String, String>{
+          'page': '$startIndex',
+          'api_key': '8eaeee91a7d280f08356724638c6c78b'
+        },
       ),
     );
+
     if (response.statusCode == 200) {
-      List<dynamic> list = jsonDecode(response.body);
-      List<Movie> movieList = [];
+      Movie movie = Movie.fromJson(jsonDecode(response.body));
+      List<Result> results;
 
-      list.map((e) => movieList.add(Movie.fromJson(e))).toList();
+      results = movie.results;
 
-      return movieList;
+      return results;
     }
-    throw Exception('error fetching posts');
+    throw Exception('error fetching movies');
   }
 }

@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
 import '../bloc/movie_bloc.dart';
+import 'movies_list.dart';
 
-class PostsPage extends StatelessWidget {
-  const PostsPage({super.key});
+class MoviesPage extends StatelessWidget {
+  const MoviesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
